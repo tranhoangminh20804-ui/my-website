@@ -1,9 +1,4 @@
-
-
 "use strict";
-
-
-
 const IS_MOBILE = window.innerWidth <= 640;
 const IS_DESKTOP = window.innerWidth > 800;
 const IS_HEADER = IS_DESKTOP && window.innerHeight < 300;
@@ -13,24 +8,19 @@ const IS_HIGH_END_DEVICE = (() => {
 	if (!hwConcurrency) {
 		return false;
 	}
-	
 	const minCount = window.innerWidth <= 1024 ? 4 : 8;
 	return hwConcurrency >= minCount;
 })();
-
 const MAX_WIDTH = 7680;
 const MAX_HEIGHT = 4320;
-const GRAVITY = 0.9; //以像素/秒为单位的加速度
+const GRAVITY = 0.9; 
 let simSpeed = 1;
-
 function getDefaultScaleFactor() {
 	if (IS_MOBILE) return 0.9;
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
-
 let stageW, stageH;
-
 let quality = 1;
 let isLowQuality = false;
 let isNormalQuality = false;
@@ -52,7 +42,6 @@ const COLOR = {
 	Gold: "#ffbf36",
 	White: "#ffffff",
 };
-
 const INVISIBLE = "_INVISIBLE_";
 
 const PI_2 = Math.PI * 2;
@@ -174,34 +163,31 @@ fscreen.addEventListener("fullscreenchange", () => {
 	store.setState({ fullscreen: isFullscreen() });
 });
 
-// 简单的状态容器
 const store = {
 	_listeners: new Set(),
 	_dispatch(prevState) {
 		this._listeners.forEach((listener) => listener(this.state, prevState));
 	},
 
-	//当前上下文状态
 	state: {
-		// 将在init()中取消挂起
+
 		paused: true,
 		soundEnabled: true,
 		menuOpen: false,
 		openHelpTopic: null,
 		fullscreen: isFullscreen(),
-		//请注意，用于<select>的配置值必须是字符串，除非手动将值转换为字符串
-		//在呈现时，并在更改时解析。
+		
 		config: {
 			quality: String(IS_HIGH_END_DEVICE ? QUALITY_HIGH : QUALITY_NORMAL), // will be mirrored to a global variable named `quality` in `configDidUpdate`, for perf.
 			shell: "Random",
 			size: IS_DESKTOP
 				? "3" // Desktop default
 				: IS_HEADER
-				? "1.2" //配置文件头默认值(不必是int)
-				: "2", //手机默认
-			wordShell: true, //文字烟花 默认为开启 若不开启可修改为false
-			autoLaunch: true, //自动发射烟花
-			finale: false, //同时放更多烟花 (mặc định bỏ tích, finale sẽ do hệ thống tự chèn)
+				? "1.2" 
+				: "2", 
+			wordShell: true, 
+			autoLaunch: true, 
+			finale: false, //(mặc định bỏ tích, finale sẽ do hệ thống tự chèn)
 			skyLighting: SKY_LIGHT_NORMAL + "",
 			hideControls: IS_HEADER,
 			longExposure: false,
@@ -3247,3 +3233,26 @@ if (IS_HEADER) {
 		});
 	}, 0);
 }
+window.addEventListener("load", () => {
+  const startBtn = document.getElementById("startBtn");
+  const startScreen = document.getElementById("startScreen");
+  const mainContent = document.getElementById("mainContent");
+
+  startBtn.addEventListener("click", () => {
+    // Ẩn màn hình START
+    startScreen.style.display = "none";
+
+    // Hiện pháo hoa
+    mainContent.style.display = "block";
+
+    // BẮT ĐẦU PHÁO HOA
+    if (typeof stage !== "undefined" && stage.start) {
+      stage.start();
+    }
+
+    // 👉 Nếu bạn có nhạc
+    if (window.bgMusic) {
+      window.bgMusic.play();
+    }
+  });
+});
